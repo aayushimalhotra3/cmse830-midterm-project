@@ -61,11 +61,12 @@ def prettify(fig):
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#ECECEC"),
         margin=dict(l=10, r=10, t=55, b=10),
         legend=dict(bgcolor="rgba(0,0,0,0)"),
     )
-    fig.update_xaxes(gridcolor="#ECE4D8")
-    fig.update_yaxes(gridcolor="#ECE4D8")
+    fig.update_xaxes(gridcolor="#2A2A33")
+    fig.update_yaxes(gridcolor="#2A2A33")
     return fig
 
 st.title("Why does this song feel like that?")
@@ -81,14 +82,14 @@ tab1, tab2, tab3 = st.tabs(["Find your vibe", "How mood changed over time", "Fin
 
 # discovery tab
 with tab1:
-    st.sidebar.header("Find your vibe")
-    mood = st.sidebar.selectbox("Mood", ["Any"] + list(mood_colors.keys()))
-    genres = st.sidebar.multiselect(
+    c1, c2 = st.columns([1, 2])
+    mood = c1.selectbox("Mood", ["Any"] + list(mood_colors.keys()))
+    genres = c2.multiselect(
         "Genre",
         sorted(df["playlist_genre"].unique()),
         default=sorted(df["playlist_genre"].unique()),
     )
-    max_pop = st.sidebar.slider("Max popularity (lower = more hidden gems)", 0, 100, 100)
+    max_pop = st.slider("Max popularity (lower = more hidden gems)", 0, 100, 100)
 
     # filter on what they picked
     picked = df[df["playlist_genre"].isin(genres)]
@@ -112,8 +113,21 @@ with tab1:
             hover_data=["track_name", "track_artist", "playlist_genre"],
             title="Mood map of your songs",
         )
+        fig.update_traces(marker=dict(size=6, opacity=0.65))
         fig.add_hline(y=0.5, line_dash="dash", line_color="gray")
         fig.add_vline(x=0.5, line_dash="dash", line_color="gray")
+
+        # shade the four mood corners, labels live in the legend
+        quads = [
+            (0.5, 1, 0.5, 1, "#F6B93B"),
+            (0, 0.5, 0.5, 1, "#E55039"),
+            (0.5, 1, 0, 0.5, "#60A3BC"),
+            (0, 0.5, 0, 0.5, "#786FA6"),
+        ]
+        for x0, x1, y0, y1, color in quads:
+            fig.add_shape(type="rect", x0=x0, x1=x1, y0=y0, y1=y1,
+                          fillcolor=color, opacity=0.10, line_width=0, layer="below")
+
         fig.update_layout(
             xaxis_title="valence (sad → happy)",
             yaxis_title="energy (calm → intense)",
