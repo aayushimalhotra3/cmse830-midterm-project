@@ -49,4 +49,4 @@ The app reads the data from spotify_dataset/spotify_songs.csv, so run it from th
 
 ## AI use
 
-I directed this project and made all the decisions. I chose the question, the data approach, and the app design, and I interpreted the findings myself. I used AI (Claude and ChatGPT) to help write and debug the code and build the app features. I ran and tested everything, and I can explain all of it.
+I directed this project and made all the decisions. I chose the question, the data approach, and the app design, and I interpreted the findings myself. I used AI (Claude and ChatGPT) to help write and debug the code and build the app features. I ran and tested everything myself and checked the results against the data.
